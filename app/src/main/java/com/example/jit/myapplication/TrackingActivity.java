@@ -19,17 +19,20 @@ import com.google.firebase.database.ValueEventListener;
 
 public class TrackingActivity extends AppCompatActivity implements View.OnClickListener{
 
-    Button stopTracking;
+    Button stopTracking,addMembers;
     private String senderId,checknotifi;
     private DatabaseReference databaseReference;
+    private String userid;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking);
         stopTracking = (Button) findViewById(R.id.bStopTracking);
+        addMembers = (Button) findViewById(R.id.bAddMembers);
         stopTracking.setOnClickListener(this);
+        addMembers.setOnClickListener(this);
         SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
-       final String userid = sharedPreferences.getString("serverid", "");
+       userid = sharedPreferences.getString("serverid", "");
         senderId = checknotifi = getIntent().getStringExtra("senderid");
         if(senderId == null)
         {
@@ -114,6 +117,18 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
                 Toast.makeText(getApplicationContext(),"Tracking has been stopped",Toast.LENGTH_SHORT).show();
                 finish();
                 break;
+            case R.id.bAddMembers :
+                addMembersTrack();
+
+                break;
         }
+    }
+
+    private void addMembersTrack(){
+
+       /* databaseReference = FirebaseDatabase.getInstance().getReference().child("GroupTrack").child(userid).child(userid);
+        databaseReference.setValue(true);*/
+        startActivity(new Intent(getApplicationContext(),AddMemberToTrackActivity.class));
+        
     }
 }

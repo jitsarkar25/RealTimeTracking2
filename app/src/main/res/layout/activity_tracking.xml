@@ -23,8 +23,15 @@
         android:text="Stop Tracking"
         android:id="@+id/bStopTracking"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true" />
-
+        android:layout_alignParentLeft="true"/>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Members"
+        android:id="@+id/bAddMembers"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        />
 
 
 </RelativeLayout>
