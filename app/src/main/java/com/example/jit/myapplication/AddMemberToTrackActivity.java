@@ -36,6 +36,7 @@ public class AddMemberToTrackActivity extends AppCompatActivity {
     private FirebaseUser user;
     private ArrayList<UserInformation> friendname;
     static ArrayList<String> positionList;
+    static ArrayList<UserInformation> addedMembersList;
     private int count =0;
     private String userid = "";
     ArrayAdapter listAdapter;
@@ -46,6 +47,7 @@ public class AddMemberToTrackActivity extends AppCompatActivity {
         lvFriends = (ListView) findViewById(R.id.lvAddMemberMyfriends);
         mAuth = FirebaseAuth.getInstance();
         positionList = new ArrayList<>();
+        addedMembersList = new ArrayList<>();
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -68,16 +70,19 @@ public class AddMemberToTrackActivity extends AppCompatActivity {
             public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
                 if(checked) {
                     positionList.add(position+"");
+                    addedMembersList.add(friendname.get(position));
                     count++;
                 }
                 else {
                     positionList.remove(position+"");
+                    addedMembersList.remove(friendname.get(position));
                     count--;
                 }
                 mode.setTitle(count + " members selected");
                 Log.d("menu position", position + "");
                 Log.d("menu checked" , checked+"");
                 Log.d("menu list" , positionList.toString());
+                Log.d("menu member list" , addedMembersList.toString());
                 listAdapter.notifyDataSetChanged();
             }
 

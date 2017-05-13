@@ -17,12 +17,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class TrackingActivity extends AppCompatActivity implements View.OnClickListener{
 
     Button stopTracking,addMembers;
     private String senderId,checknotifi;
     private DatabaseReference databaseReference;
     private String userid;
+    boolean isGroupTrack =false;
+    private ArrayList <UserInformation> membersJoinedList;
+    private ArrayList <String> membersJoinedKeyList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,6 +37,8 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
         addMembers = (Button) findViewById(R.id.bAddMembers);
         stopTracking.setOnClickListener(this);
         addMembers.setOnClickListener(this);
+        membersJoinedKeyList = new ArrayList<>();
+        membersJoinedList = new ArrayList<>();
         SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
        userid = sharedPreferences.getString("serverid", "");
         senderId = checknotifi = getIntent().getStringExtra("senderid");
@@ -70,7 +78,7 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
     }
 
     public void check(String userid){
-        Log.d("Sender",userid +" " +senderId);
+        Log.d("Sender", userid + " " + senderId);
         databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackReq").child(userid).child(senderId);
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -128,7 +136,46 @@ public class TrackingActivity extends AppCompatActivity implements View.OnClickL
 
        /* databaseReference = FirebaseDatabase.getInstance().getReference().child("GroupTrack").child(userid).child(userid);
         databaseReference.setValue(true);*/
+        isGroupTrack = true;
         startActivity(new Intent(getApplicationContext(),AddMemberToTrackActivity.class));
         
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(isGroupTrack)
+            checkGroup();
+    }
+
+    public void checkGroup()
+    {
+        DatabaseReference databaseReferenceGroup = FirebaseDatabase.getInstance().getReference().child("GroupTrack").child(userid);
+        databaseReferenceGroup.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+             //   Toast.makeText(getApplicationContext(),"Something changed",Toast.LENGTH_LONG).show();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (child.getValue().toString().equals("true")) {
+                        for(UserInformation ui : AddMemberToTrackActivity.addedMembersList){
+                            if(ui.getKey().equals(child.getKey())) {
+                                if(!membersJoinedList.contains(ui)) {
+                                    membersJoinedList.add(ui);
+                                    membersJoinedKeyList.add(ui.getKey());
+                                    Toast.makeText(getApplicationContext(), ui.name + " joined Track", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
     }
 }

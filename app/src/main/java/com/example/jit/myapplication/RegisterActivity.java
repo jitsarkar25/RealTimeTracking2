@@ -1,6 +1,7 @@
 package com.example.jit.myapplication;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,6 +12,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -80,7 +85,6 @@ public class RegisterActivity extends AppCompatActivity {
                         Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
 
-
                         if (task.isSuccessful()) {
                             final FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
@@ -97,15 +101,16 @@ public class RegisterActivity extends AppCompatActivity {
                                         }
                                     });
 
-                            String name =etName.getText().toString().trim();
-                            String phone =etPhone.getText().toString().trim();
-                            int random = (int)(Math.random()*99999999);
-                            Log.d(TAG,"here");
+                            String name = etName.getText().toString().trim();
+                            String phone = etPhone.getText().toString().trim();
+                            int random = (int) (Math.random() * 99999999);
+                            Log.d(TAG, "here");
                             databaseReference.child("users").child(String.valueOf(random)).setValue(user.getUid());
-                            UserInformation userInformation = new UserInformation(name,phone,String.valueOf(random));
+                            UserInformation userInformation = new UserInformation(name, phone, String.valueOf(random));
                             //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                             databaseReference.child("details").child(user.getUid()).setValue(userInformation);
-                            startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                            sendsms(phone);
+                           // startActivity(new Intent(getApplicationContext(), UserActivity.class));
                             finish();
                         }
                         // If sign in fails, display a message to the user. If sign in succeeds
@@ -133,5 +138,29 @@ public class RegisterActivity extends AppCompatActivity {
         if (mAuthListener != null) {
             mAuth.removeAuthStateListener(mAuthListener);
         }
+    }
+    public void sendsms(String phone) {
+
+        SharedPreferences sharedPreferences = getSharedPreferences("otpcheck", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString("phone", phone);
+        editor.commit();
+
+        String url = "https://control.msg91.com/api/sendotp.php?authkey=151462A3CrVZc2590d79f6&mobile=" + phone + "&sender=trckit";
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(), "Please Verify OTP Sent to your mobile", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(getApplicationContext(), VerifyOtpActivity.class));
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }
+
+        );
+        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
     }
 }

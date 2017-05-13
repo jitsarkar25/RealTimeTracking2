@@ -3,7 +3,10 @@ package com.example.jit.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.Manifest;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -30,6 +34,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     FirebaseUser user;
     TextView textView,uniqueID;
     Button logout;
+    final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +42,12 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         textView = (TextView)findViewById(R.id.tvNameUser);
         uniqueID = (TextView)findViewById(R.id.tvUniqueId);
         logout = (Button)findViewById(R.id.bLogout);
+
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+
+
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -83,7 +94,32 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
         logout.setOnClickListener(this);
 
     }
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_READ_CONTACTS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    Intent i = new Intent(getApplicationContext(),TaskService.class);
+                    startService(i);
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
     @Override
     public void onStart() {
         super.onStart();
@@ -138,6 +174,9 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.trackreqs:
                 startActivity(new Intent(getApplicationContext(),TrackingRequestActivity.class));
+                break;
+            case R.id.menutasks:
+                startActivity(new Intent(getApplicationContext(),MyTasksActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);
