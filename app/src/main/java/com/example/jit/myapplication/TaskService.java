@@ -40,12 +40,14 @@ public class TaskService extends Service implements LocationListener {
     private ArrayList<Tasks> taskList;
     LocationManager locationManager;
     String provider;
+    private ArrayList<Tasks> taskAlerted;
 
     @Override
     public void onCreate() {
         super.onCreate();
         Toast.makeText(getApplicationContext(), "Working", Toast.LENGTH_SHORT).show();
         taskList = new ArrayList<>();
+        taskAlerted = new ArrayList<>();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
        // provider = locationManager.getBestProvider(new Criteria(), false);
@@ -91,7 +93,7 @@ public class TaskService extends Service implements LocationListener {
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     final String key = child.getKey();
                     Tasks myTasks = child.getValue(Tasks.class);
-                    Log.d("TaskService", myTasks.details);
+                   // Log.d("TaskService", myTasks.details);
                     if (!taskList.contains(myTasks))
                         taskList.add(myTasks);
                 }
@@ -112,11 +114,14 @@ public class TaskService extends Service implements LocationListener {
             Location location1 = new Location("");
             location1.setLatitude(Double.parseDouble(tasks.latitude));
             location1.setLongitude(Double.parseDouble(tasks.longitude));
-            if(location.distanceTo(location1)<=500)
+            if(location.distanceTo(location1)<=500 && !taskAlerted.contains(tasks) )
             {
                // Toast.makeText(getApplicationContext(),"You have a task "+tasks.details,Toast.LENGTH_SHORT).show();
-                Intent intent= new Intent(this,MyTasksActivity.class);
+                taskAlerted.add(tasks);
+
+                Intent intent= new Intent(this,TaskDetailsActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("task",tasks);
                 PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
                 NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
                 notificationBuilder.setContentTitle("Task Alert");

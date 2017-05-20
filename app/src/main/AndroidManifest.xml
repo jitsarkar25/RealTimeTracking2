@@ -26,7 +26,7 @@
         <activity android:name=".RegisterActivity" />
         <activity
             android:name=".UserActivity"
-            android:launchMode="singleTask"></activity>
+            android:launchMode="singleTask" />
 
         <service android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
@@ -75,7 +75,8 @@
         <activity
             android:name=".SetLocationTaskActivity"
             android:label="@string/title_activity_set_location_task" />
-        <activity android:name=".VerifyOtpActivity"></activity>
+        <activity android:name=".VerifyOtpActivity" />
+        <activity android:name=".TaskDetailsActivity"></activity>
     </application>
 
 </manifest>
