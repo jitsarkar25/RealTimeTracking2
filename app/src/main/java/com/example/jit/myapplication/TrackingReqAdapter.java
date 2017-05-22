@@ -74,7 +74,7 @@ public class TrackingReqAdapter extends ArrayAdapter<UserInformation> {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 token[0] = dataSnapshot.getValue(String.class);
                                 sendAcceptNotification(token[0], username);
-                                Intent intent = new Intent(con,TrackingActivity.class);
+                                Intent intent = new Intent(con,TrackMapActivity.class);
                                 intent.putExtra("senderid",senderid);
                                 con.startActivity(intent);
 

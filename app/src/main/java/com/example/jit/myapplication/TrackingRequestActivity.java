@@ -41,7 +41,7 @@ public class TrackingRequestActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     populateList();
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    Log.d(TAG, "onAuthStateChanged:si:" + user.getUid());
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");

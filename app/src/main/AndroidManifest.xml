@@ -51,11 +51,7 @@
         <activity android:name=".MyFriendsActivity" />
         <activity android:name=".TrackingRequestActivity" />
         <activity android:name=".TrackingActivity">
-            <intent-filter>
-                <action android:name="OPEN_ACTIVITY_TRACK" />
 
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity android:name=".AddMemberToTrackActivity" />
         <activity android:name=".AddTaskActivity" />
@@ -76,7 +72,17 @@
             android:name=".SetLocationTaskActivity"
             android:label="@string/title_activity_set_location_task" />
         <activity android:name=".VerifyOtpActivity" />
-        <activity android:name=".TaskDetailsActivity"></activity>
+        <activity android:name=".TaskDetailsActivity" />
+        <activity
+            android:name=".TrackMapActivity"
+            android:label="@string/title_activity_track_map">
+
+            <intent-filter>
+                <action android:name="OPEN_ACTIVITY_TRACK" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
