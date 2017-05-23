@@ -131,32 +131,33 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     }
     public void checkTrackSession(){
 
-        databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(userid+"-"+senderId);
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(userid+"-"+senderId).child("track");
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String value=dataSnapshot.getValue().toString();
+                String key=dataSnapshot.getKey();
+                Log.d("Key obtained",key);
                 String parts[]=value.split(",");
-                if(parts[0].equals(senderId))
-                {
+                if(key.equals(senderId)) {
                     /*Log.d("added location",parts[1]+"   ,   "+parts[2]);
                     Toast.makeText(getApplicationContext(),parts[1]+" "+parts[2],Toast.LENGTH_SHORT).show();  */
-                    LatLng sydney = new LatLng(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
-                    if(d==0) {
+                    LatLng sydney = new LatLng(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
+                    if (d == 0) {
                         //mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
-                        marker2=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                        marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
                     }
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,17.5f));
-                    if(d!=0) {
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.5f));
+                    if (d != 0) {
                         marker2.remove();
                         mMap.addPolyline(new PolylineOptions()
-                                .add(new LatLng(c1,d1), sydney)
+                                .add(new LatLng(c1, d1), sydney)
                                 .width(5).color(Color.BLUE).geodesic(true));
                     }
-                    marker2=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
-                    c1=Double.parseDouble(parts[1]);
-                    d1=Double.parseDouble(parts[2]);
-                    d=1;
+                    marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                    c1 = Double.parseDouble(parts[0]);
+                    d1 = Double.parseDouble(parts[1]);
+                    d = 1;
                 }
             }
 
@@ -164,10 +165,12 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 if(!value.equals(dataSnapshot.getValue().toString())) {
                     value = dataSnapshot.getValue().toString();
+                    String key=dataSnapshot.getKey();
+                    Log.d("Key obtained",key);
                     String parts[] = value.split(",");
                     Log.d("changed location", value + "    " + "senderid=" + senderId);
-                    if (parts[0].equals(senderId)) {
-                        LatLng sydney = new LatLng(Double.parseDouble(parts[1]), Double.parseDouble(parts[2]));
+                    if (key.equals(senderId)) {
+                        LatLng sydney = new LatLng(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
                         if(c==0) {
                             //mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
                             marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
@@ -180,8 +183,8 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                                     .width(5).color(Color.BLUE).geodesic(true));
                         }
                         marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
-                        a1=Double.parseDouble(parts[1]);
-                        b1=Double.parseDouble(parts[2]);
+                        a1=Double.parseDouble(parts[0]);
+                        b1=Double.parseDouble(parts[1]);
                         c=1;
                     }
                 }
@@ -334,10 +337,10 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     public void onLocationChanged(Location location) {
         if(senderId!=null) {
 
-            databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(userid + "-" + senderId).child("track");
-            databaseReference1 = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(senderId + "-" + userid).child("track");
-            databaseReference.setValue(userid + "," + location.getLatitude() + "," + location.getLongitude());
-            databaseReference1.setValue(userid + "," + location.getLatitude() + "," + location.getLongitude());
+            databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(userid + "-" + senderId).child("track").child(userid);
+            databaseReference1 = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(senderId + "-" + userid).child("track").child(userid);
+            databaseReference.setValue(location.getLatitude() + "," + location.getLongitude());
+            databaseReference1.setValue( location.getLatitude() + "," + location.getLongitude());
 
         }
 
