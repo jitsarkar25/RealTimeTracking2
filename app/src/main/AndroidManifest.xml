@@ -73,6 +73,7 @@
             android:label="@string/title_activity_set_location_task" />
         <activity android:name=".VerifyOtpActivity" />
         <activity android:name=".TaskDetailsActivity" />
+
         <activity
             android:name=".TrackMapActivity"
             android:label="@string/title_activity_track_map">
@@ -83,6 +84,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

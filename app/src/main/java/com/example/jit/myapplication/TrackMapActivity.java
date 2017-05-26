@@ -21,6 +21,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,12 +37,15 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_MAGENTA;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
+
 public class TrackMapActivity extends FragmentActivity implements OnMapReadyCallback,View.OnClickListener,LocationListener {
 
     private GoogleMap mMap;
-    int c=0,d=0;
-    double a1,b1,c1,d1=0.0;
-    Marker marker1,marker2;
+    int c=0,d=0,f=0;
+    double a1,b1,f1,f2,c1,d1=0.0;
+    Marker marker1,marker2,marker3;
     Button stopTracking,addMembers;
     private String senderId,checknotifi,value="";
     private DatabaseReference databaseReference,databaseReference1;
@@ -49,6 +54,7 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     LocationManager locationManager;
     private ArrayList<UserInformation> membersJoinedList;
     private ArrayList <String> membersJoinedKeyList;
+    private boolean showme=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +65,9 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         stopTracking = (Button) findViewById(R.id.bStopTracking);
-        addMembers = (Button) findViewById(R.id.bAddMembers);
+       // addMembers = (Button) findViewById(R.id.bAddMembers);
         stopTracking.setOnClickListener(this);
-        addMembers.setOnClickListener(this);
+     //   addMembers.setOnClickListener(this);
         membersJoinedKeyList = new ArrayList<>();
         membersJoinedList = new ArrayList<>();
         SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
@@ -129,6 +135,19 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
         }
 
     }
+
+    @Override
+    public void onBackPressed() {
+        // do nothing.
+    }
+
+    public void showMe(View v){
+        showme=true;
+    }
+    public void showFriend(View v)
+    {
+        showme=false;
+    }
     public void checkTrackSession(){
 
         databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(userid+"-"+senderId).child("track");
@@ -147,6 +166,7 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                         //mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
                         marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
                     }
+                    if(!showme)
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.5f));
                     if (d != 0) {
                         marker2.remove();
@@ -155,6 +175,9 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                                 .width(5).color(Color.BLUE).geodesic(true));
                     }
                     marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                    if(!showme)
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.5f));
+
                     c1 = Double.parseDouble(parts[0]);
                     d1 = Double.parseDouble(parts[1]);
                     d = 1;
@@ -174,15 +197,22 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                         if(c==0) {
                             //mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
                             marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                            mMap.addPolyline(new PolylineOptions()
+                                    .add(new LatLng(c1,d1), sydney)
+                                    .width(5).color(Color.BLUE).geodesic(true));
                         }
+                        if(!showme)
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,17.5f));
-                        if(c!=0) {
+
                             marker1.remove();
+                        if(c!=0)
                             mMap.addPolyline(new PolylineOptions()
                                     .add(new LatLng(a1,b1), sydney)
                                     .width(5).color(Color.BLUE).geodesic(true));
-                        }
+
                         marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                        if(!showme)
+                            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,17.5f));
                         a1=Double.parseDouble(parts[0]);
                         b1=Double.parseDouble(parts[1]);
                         c=1;
@@ -241,16 +271,16 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     }
 
 
-
+/*
     private void addMembersTrack(){
 
        /* databaseReference = FirebaseDatabase.getInstance().getReference().child("GroupTrack").child(userid).child(userid);
-        databaseReference.setValue(true);*/
+        databaseReference.setValue(true);
         isGroupTrack = true;
         startActivity(new Intent(getApplicationContext(),AddMemberToTrackActivity.class));
 
     }
-
+*/
     @Override
     protected void onResume() {
         super.onResume();
@@ -304,9 +334,9 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
         mMap = googleMap;
 
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+       /* LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 
     @Override
@@ -325,16 +355,31 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                 Toast.makeText(getApplicationContext(),"Tracking has been stopped",Toast.LENGTH_SHORT).show();
                 finish();
                 break;
-            case R.id.bAddMembers :
-                addMembersTrack();
-
-                break;
         }
 
     }
 
     @Override
     public void onLocationChanged(Location location) {
+
+        LatLng position =  new LatLng(location.getLatitude(),location.getLongitude());
+
+        if(f==0) {
+            marker3=mMap.addMarker(new MarkerOptions().position(position).title("First Your Location").icon(BitmapDescriptorFactory.defaultMarker(HUE_MAGENTA)));
+        }
+        if(showme)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,17.5f));
+        if(f!=0) {
+            marker3.remove();
+            mMap.addPolyline(new PolylineOptions()
+                    .add(new LatLng(f1,f2), position)
+                    .width(5).color(Color.GREEN).geodesic(true));
+        }
+        marker3=mMap.addMarker(new MarkerOptions().position(position).title("First Your Location").icon(BitmapDescriptorFactory.defaultMarker(HUE_MAGENTA)));
+        f1=location.getLatitude();
+        f2=location.getLongitude();
+        f=1;
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(position));
         if(senderId!=null) {
 
             databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackSession").child(userid + "-" + senderId).child("track").child(userid);

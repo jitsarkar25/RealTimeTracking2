@@ -21,11 +21,12 @@ public class AddTaskActivity extends AppCompatActivity {
     Button saveTask;
     private DatabaseReference databaseReference;
     private int random;
+    Tasks tasks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_task);
-        Tasks tasks =(Tasks) getIntent().getSerializableExtra("tasks");
+         tasks =(Tasks) getIntent().getSerializableExtra("tasks");
         taskLocation = (EditText) findViewById(R.id.etTaskLocation);
         taskDetails = (EditText) findViewById(R.id.etTaskDetails);
         if(tasks == null)
@@ -78,6 +79,8 @@ public class AddTaskActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), SetLocationTaskActivity.class);
+                if(tasks!=null)
+                intent.putExtra("tasks",tasks);
                 startActivityForResult(intent, 5);
             }
         });

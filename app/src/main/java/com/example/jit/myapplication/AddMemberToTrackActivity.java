@@ -16,6 +16,11 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +30,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddMemberToTrackActivity extends AppCompatActivity {
 
@@ -111,6 +118,7 @@ public class AddMemberToTrackActivity extends AppCompatActivity {
                             }
                             databaseReference = FirebaseDatabase.getInstance().getReference().child("GroupTrack").child(userid).child(friendname.get(Integer.parseInt(pos)).getKey());
                             databaseReference.setValue(false);
+
                         }
                         finish();
                         break;
@@ -125,6 +133,8 @@ public class AddMemberToTrackActivity extends AppCompatActivity {
         });
 
     }
+
+
     public void populateList(){
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FriendReq").child(user.getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {

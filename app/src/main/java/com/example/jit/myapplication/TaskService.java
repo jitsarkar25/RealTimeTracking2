@@ -114,7 +114,7 @@ public class TaskService extends Service implements LocationListener {
             Location location1 = new Location("");
             location1.setLatitude(Double.parseDouble(tasks.latitude));
             location1.setLongitude(Double.parseDouble(tasks.longitude));
-            if(location.distanceTo(location1)<=500 && !taskAlerted.contains(tasks) )
+            if(location.distanceTo(location1)<=200 && !taskAlerted.contains(tasks) )
             {
                // Toast.makeText(getApplicationContext(),"You have a task "+tasks.details,Toast.LENGTH_SHORT).show();
                 taskAlerted.add(tasks);
