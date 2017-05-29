@@ -1,5 +1,6 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class MyFriendsActivity extends AppCompatActivity {
     ListView lvMyFriends;
     private FirebaseUser user;
     private ArrayList<UserInformation> friendname;
+    ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +54,10 @@ public class MyFriendsActivity extends AppCompatActivity {
 
     }
     public void populateList(){
+        progress = new ProgressDialog(MyFriendsActivity.this);
+        progress.setTitle("Please Wait");
+        progress.setMessage("Fetching Details");
+        progress.show();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FriendReq").child(user.getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -71,6 +77,7 @@ public class MyFriendsActivity extends AppCompatActivity {
                             databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                    progress.dismiss();
                                     UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
                                     Log.d("Value Name", userInformation.name);
                                     userInformation.setKey(key);

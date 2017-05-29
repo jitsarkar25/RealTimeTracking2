@@ -1,5 +1,6 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.support.annotation.NonNull;
@@ -47,6 +48,7 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
     EditText etSearch;
     Button bSearch,bSendFriendReq;
     TextView tvMsgFriend;
+    ProgressDialog progress;
     LinearLayout linearLayout;
     String token,dbId;
     @Override
@@ -86,68 +88,79 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
         switch(v.getId())
         {
             case R.id.bSearchFriend:
-
+                SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
                     String enteredId = etSearch.getText().toString().trim();
                     Log.d("Value", enteredId);
-                    databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(enteredId);
-                    databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
+                    if(enteredId.equals("")||enteredId==null){
+                        Toast.makeText(getApplicationContext(),"Enter an User Id",Toast.LENGTH_SHORT).show();
+                    }
+                    else if(enteredId.equals(sharedPreferences.getString("id",""))){
+                        Toast.makeText(getApplicationContext(),"This is your User Id",Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        progress = new ProgressDialog(SearchFriendsActivity.this);
+                        progress.setTitle("Please Wait");
+                        progress.setMessage("Searching User");
+                        progress.show();
+                        databaseReference = FirebaseDatabase.getInstance().getReference().child("users").child(enteredId);
+                        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            if(dataSnapshot.getValue() != null) {
-                                 dbId = dataSnapshot.getValue().toString();
+                                if (dataSnapshot.getValue() != null) {
+                                    dbId = dataSnapshot.getValue().toString();
 
-                                //fetching user name from database
-                                DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("details").child(dbId);
-                                databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        UserInformation userInformation= dataSnapshot.getValue(UserInformation.class);
-                                        Log.d("Value",userInformation.name);
-                                        linearLayout.setVisibility(View.VISIBLE);
-                                        tvMsgFriend.setText(userInformation.name);
+                                    //fetching user name from database
+                                    DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("details").child(dbId);
+                                    databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            progress.dismiss();
+                                            UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
+                                            Log.d("Value", userInformation.name);
+                                            linearLayout.setVisibility(View.VISIBLE);
+                                            tvMsgFriend.setText(userInformation.name);
 
-                                        //fetching firebase token from database
+                                            //fetching firebase token from database
 
-                                        DatabaseReference databaseReferenceToken = FirebaseDatabase.getInstance().getReference().child("token").child(dbId);
-                                        databaseReferenceToken.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                if(dataSnapshot.getValue() != null) {
-                                                    token = dataSnapshot.getValue().toString();
-                                                    Log.d("Token",token);
+                                            DatabaseReference databaseReferenceToken = FirebaseDatabase.getInstance().getReference().child("token").child(dbId);
+                                            databaseReferenceToken.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    if (dataSnapshot.getValue() != null) {
+                                                        token = dataSnapshot.getValue().toString();
+                                                        Log.d("Token", token);
+                                                    } else {
+                                                        token = "";
+                                                        Log.d("Token", "no token");
+                                                    }
                                                 }
-                                                else{
-                                                    token = "";
-                                                    Log.d("Token","no token");
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
                                                 }
-                                            }
+                                            });
+                                        }
 
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
 
-                                            }
-                                        });
-                                    }
-
-                                    @Override
-                                    public void onCancelled(DatabaseError databaseError) {
-
-                                    }
-                                });
-                            }else
-                            {
-                                Toast.makeText(getApplicationContext(),"User Not Found",Toast.LENGTH_LONG).show();
-                                linearLayout.setVisibility(View.INVISIBLE);
+                                        }
+                                    });
+                                } else {
+                                    progress.dismiss();
+                                    Toast.makeText(getApplicationContext(), "User Not Found", Toast.LENGTH_LONG).show();
+                                    linearLayout.setVisibility(View.INVISIBLE);
+                                }
                             }
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
 
-                        }
-                    });
-
+                            }
+                        });
+                    }
 
 
                 break;
@@ -199,7 +212,7 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
                 params.put("key",token);
                 params.put("message",name + " has send you a friend request");
                 params.put("title","Friend Request");
-                params.put("open","OPEN_ACTIVITY_1");
+                params.put("open","OPEN_SEARCH_FRIEND");
 
                 return params;
             }

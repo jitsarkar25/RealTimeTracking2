@@ -1,5 +1,6 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,6 +27,7 @@ public class MyTasksActivity extends AppCompatActivity implements View.OnClickLi
     private ArrayList<Tasks> taskList;
     private ListView lvTasks;
     private ListAdapter listAdapter;
+    ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +50,17 @@ public class MyTasksActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void fetchTasks(){
+        progress = new ProgressDialog(MyTasksActivity.this);
+        progress.setTitle("Please Wait");
+        progress.setMessage("Fetching Tasks");
+        progress.show();
         SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
         String userid = sharedPreferences.getString("serverid", "");
         databaseReference = FirebaseDatabase.getInstance().getReference().child("Tasks").child(userid);
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                progress.dismiss();
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
                     final String key = child.getKey();
                     Tasks myTasks = child.getValue(Tasks.class);

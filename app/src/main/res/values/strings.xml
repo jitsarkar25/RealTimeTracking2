@@ -3,4 +3,7 @@
     <string name="title_activity_find_friends">FindFriendsActivity</string>
     <string name="title_activity_set_location_task">Map</string>
     <string name="title_activity_track_map">Map</string>
+    <string name="facebook_app_id">1140785102694155</string>
+    <string name="fb_login_protocol_scheme">fb1140785102694155</string>
+
 </resources>

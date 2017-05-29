@@ -1,5 +1,6 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,6 +18,11 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.Manifest;
 
+import com.facebook.login.LoginManager;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -35,6 +41,8 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
     TextView textView,uniqueID;
     Button logout;
     final int MY_PERMISSIONS_REQUEST_READ_CONTACTS=1;
+    ProgressDialog progress;
+    private GoogleApiClient mGoogleApiClient;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +55,10 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                 new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                 MY_PERMISSIONS_REQUEST_READ_CONTACTS);
 
-
+        progress = new ProgressDialog(UserActivity.this);
+        progress.setTitle("Please Wait");
+        progress.setMessage("Fetching details");
+        progress.show();
 
         mAuth = FirebaseAuth.getInstance();
 
@@ -66,6 +77,7 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                             UserInformation userInformation= dataSnapshot.getValue(UserInformation.class);
 
                          /*   Saving userinfo to sharedpreference*/
+                         progress.dismiss();
                             SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sharedPreferences.edit();
                             editor.putString("username",userInformation.name);
@@ -141,9 +153,21 @@ public class UserActivity extends AppCompatActivity implements View.OnClickListe
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.clear();
                 editor.commit();
+                SharedPreferences sharedPreferences2 = getSharedPreferences("logininfo", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor2 = sharedPreferences2.edit();
+                editor2.putBoolean("islogin",false);
+                editor2.commit();
+                LoginManager.getInstance().logOut();
                 FirebaseDatabase.getInstance().getReference().child("token").child(user.getUid()).removeValue();
                 FirebaseAuth.getInstance().signOut();
 
+               /* Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
+                        new ResultCallback<Status>() {
+                            @Override
+                            public void onResult(@NonNull Status status) {
+                               // updateUI(null);
+                            }
+                        });*/
                 finish();
                 startActivity(new Intent(getApplicationContext(), MainActivity.class));
 

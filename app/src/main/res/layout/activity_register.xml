@@ -21,22 +21,7 @@
 
         android:ems="10"
         android:id="@+id/etEmailRegister" />
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textPersonName"
-        android:hint="Enter Full Name"
-        android:ems="10"
-        android:id="@+id/etNameRegister" />
 
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:inputType="number"
-        android:layout_below="@+id/etEmailLogin"
-        android:hint="Enter Phone Number"
-        android:ems="10"
-        android:id="@+id/etPhoneRegister" />
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

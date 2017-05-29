@@ -123,7 +123,7 @@ public class MyFriendsAdapter extends ArrayAdapter<UserInformation> {
                 params.put("key", token);
                 params.put("message",name + " wants to track you");
                 params.put("title","Tracking Request");
-                params.put("open","OPEN_ACTIVITY_1");
+                params.put("open","OPEN_TRACKING_REQ");
 
                 return params;
             }

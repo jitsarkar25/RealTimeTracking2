@@ -45,8 +45,7 @@ public class RegisterActivity extends AppCompatActivity {
         register =(Button)findViewById(R.id.bRegister);
         etemail =(EditText)findViewById(R.id.etEmailRegister);
         etpassword =(EditText)findViewById(R.id.etPasswordRegister);
-        etName =(EditText)findViewById(R.id.etNameRegister);
-        etPhone =(EditText)findViewById(R.id.etPhoneRegister);
+
 
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
@@ -96,22 +95,13 @@ public class RegisterActivity extends AppCompatActivity {
 
 
                                                 Toast.makeText(getApplicationContext(), "Registration Successfull..Please Verify Your Email", Toast.LENGTH_LONG).show();
-
+                                                startActivity(new Intent(getApplicationContext(),UserDetailsActivity.class));
+                                                finish();
                                             }
                                         }
                                     });
 
-                            String name = etName.getText().toString().trim();
-                            String phone = etPhone.getText().toString().trim();
-                            int random = (int) (Math.random() * 99999999);
-                            Log.d(TAG, "here");
-                            databaseReference.child("users").child(String.valueOf(random)).setValue(user.getUid());
-                            UserInformation userInformation = new UserInformation(name, phone, String.valueOf(random));
-                            //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                            databaseReference.child("details").child(user.getUid()).setValue(userInformation);
-                            sendsms(phone);
-                           // startActivity(new Intent(getApplicationContext(), UserActivity.class));
-                            finish();
+
                         }
                         // If sign in fails, display a message to the user. If sign in succeeds
                         // the auth state listener will be notified and logic to handle the
@@ -139,28 +129,5 @@ public class RegisterActivity extends AppCompatActivity {
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
-    public void sendsms(String phone) {
 
-        SharedPreferences sharedPreferences = getSharedPreferences("otpcheck", MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("phone", phone);
-        editor.commit();
-
-        String url = "https://control.msg91.com/api/sendotp.php?authkey=151462A3CrVZc2590d79f6&mobile=" + phone + "&sender=trckit";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(), "Please Verify OTP Sent to your mobile", Toast.LENGTH_SHORT).show();
-                startActivity(new Intent(getApplicationContext(), VerifyOtpActivity.class));
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        }
-
-        );
-        MySingleton.getInstance(getApplicationContext()).addToRequestQueue(stringRequest);
-    }
 }

@@ -149,7 +149,7 @@ public void sendAcceptNotification(String senderid, final String username){
             params.put("key", token);
             params.put("message",username + " has accepted your friend request");
             params.put("title","Friend Request");
-            params.put("open","OPEN_ACTIVITY_1");
+            params.put("open","OPEN_MY_FRIENDS");
 
             return params;
         }

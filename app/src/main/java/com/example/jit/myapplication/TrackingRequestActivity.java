@@ -1,11 +1,13 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -27,6 +29,7 @@ public class TrackingRequestActivity extends AppCompatActivity {
     ListView lvTrackingReqs;
     private FirebaseUser user;
     private ArrayList<UserInformation> friendname;
+    ProgressDialog progress;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,19 +55,26 @@ public class TrackingRequestActivity extends AppCompatActivity {
 
     }
     public void populateList(){
+        progress = new ProgressDialog(TrackingRequestActivity.this);
+        progress.setTitle("Please Wait");
+        progress.setMessage("Getting Track Requests");
+        progress.show();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackReq").child(user.getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Log.d("Value",dataSnapshot.getValue().toString());
+                progress.dismiss();
                 if(dataSnapshot.getValue() == null)
                 {
                     Log.d("Value","No Tracking Request");
+                    Toast.makeText(getApplicationContext(),"No Tracking Request Yet",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     friendname = new ArrayList<UserInformation>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         if (child.getValue().toString().equals("false")) {
+                            progress.dismiss();
                             final String key = child.getKey();
                             //fetching the user
                             DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("details").child(key);

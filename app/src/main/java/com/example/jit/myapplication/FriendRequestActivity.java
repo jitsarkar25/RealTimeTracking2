@@ -1,5 +1,6 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class FriendRequestActivity extends AppCompatActivity {
     ListView lvFriendReq;
     private FirebaseUser user;
     private  ArrayList<UserInformation> friendname;
+    ProgressDialog progress;
     @Override
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,25 +58,34 @@ public class FriendRequestActivity extends AppCompatActivity {
 
     }
     public void populateList(){
+        progress = new ProgressDialog(FriendRequestActivity.this);
+        progress.setTitle("Please Wait");
+        progress.setMessage("Getting Friend Requests");
+        progress.show();
         databaseReference = FirebaseDatabase.getInstance().getReference().child("FriendReq").child(user.getUid());
         databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // Log.d("Value",dataSnapshot.getValue().toString());
+                progress.dismiss();
                 if(dataSnapshot.getValue() == null)
                 {
+                    progress.dismiss();
                     Log.d("Value","No Friend Request");
                 }
                 else {
                     friendname = new ArrayList<UserInformation>();
+
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         if (child.getValue().toString().equals("false")) {
                             final String key = child.getKey();
                             //fetching the user
+                            progress.dismiss();
                             DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("details").child(key);
                             databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
+                                    progress.dismiss();
                                     UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
                                     Log.d("Value Name", userInformation.name);
                                     friendname.add(userInformation);

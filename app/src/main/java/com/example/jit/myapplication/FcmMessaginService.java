@@ -25,8 +25,29 @@ public class FcmMessaginService extends FirebaseMessagingService{
         String message=remoteMessage.getNotification().getBody();
         Log.d("fcm","title"+title);
         Log.d("fcm","message"+message);
-        Intent intent= new Intent(this,MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        Log.d("fcm","contains"+message.contains("has accepted your friend request"));
+        Intent intent;
+        if(message.contains("has accepted your friend request"))
+        {
+            intent= new Intent(this,MyFriendsActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(message.contains("has send you a friend request")) {
+            intent= new Intent(this,FriendRequestActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(message.contains("wants to track you")) {
+            intent= new Intent(this,TrackingRequestActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else if(message.contains("has accepted your tracking request")) {
+            intent= new Intent(this,TrackMapActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+        else {
+            intent = new Intent(this, MainActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
         PendingIntent pendingIntent = PendingIntent.getActivity(this,0,intent,PendingIntent.FLAG_ONE_SHOT);
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(this);
         notificationBuilder.setContentTitle(title);
