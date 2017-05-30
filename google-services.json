@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "805750757492",
+    "firebase_url": "https://fcmandroidmessage-32acc.firebaseio.com",
+    "project_id": "fcmandroidmessage-32acc",
+    "storage_bucket": "fcmandroidmessage-32acc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:805750757492:android:4c8428a9f9c736bb",
+        "android_client_info": {
+          "package_name": "com.example.jit.myapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "805750757492-p6i4t40a0dsjqj6h9k2ks3mk2sfjk4kp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jit.myapplication",
+            "certificate_hash": "ac6c2c21599765106576d77554edcea21747c748"
+          }
+        },
+        {
+          "client_id": "805750757492-quek7qt1252ef5lapo72qv60hkosa9v8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAA6ByPAZHlWbAxeZTqY6xhGYE1DAnfgTs"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "805750757492-quek7qt1252ef5lapo72qv60hkosa9v8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

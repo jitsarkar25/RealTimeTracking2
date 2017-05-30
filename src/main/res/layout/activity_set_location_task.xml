@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    tools:context=".SetLocationTaskActivity"
+    >
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:id="@+id/topll"
+        >
+
+        <EditText
+            android:layout_width="fill_parent"
+            android:id="@+id/etsearchbox"
+            android:backgroundTint="#e53a40"
+            android:hint="Enter your address"
+            android:layout_height="wrap_content" />
+        <Button
+            android:layout_width="fill_parent"
+            android:text="Search"
+            android:id="@+id/searchbtn"
+            android:onClick="searchloc"
+            android:layout_margin="5dp"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+<fragment xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:map="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/map"
+    android:name="com.google.android.gms.maps.SupportMapFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_below="@+id/topll"
+    tools:context="com.example.jit.myapplication.SetLocationTaskActivity" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:id="@+id/bLocSubmit"
+
+        android:layout_marginBottom="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_alignBottom="@+id/map"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+</RelativeLayout>
