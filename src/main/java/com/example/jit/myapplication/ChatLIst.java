@@ -39,6 +39,7 @@ public class ChatLIst extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lvMyFriends = (ListView)findViewById(R.id.lvChatFriends);
         mAuth = FirebaseAuth.getInstance();
 

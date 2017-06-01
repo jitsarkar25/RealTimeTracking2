@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -35,7 +36,7 @@ public class MyFriendsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_friends);
         lvMyFriends = (ListView)findViewById(R.id.lvMyfriends);
         mAuth = FirebaseAuth.getInstance();
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
             @Override
             public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
@@ -66,27 +67,47 @@ public class MyFriendsActivity extends AppCompatActivity {
                 if(dataSnapshot.getValue() == null)
                 {
                     Log.d("Value","No Friends");
+                    progress.dismiss();
+                    Toast.makeText(getApplication(),"No Friends Yet",Toast.LENGTH_SHORT).show();
                 }
                 else {
                     friendname = new ArrayList<UserInformation>();
                     for (DataSnapshot child : dataSnapshot.getChildren()) {
                         if (child.getValue().toString().equals("true")) {
                             final String key = child.getKey();
-                            //fetching the user
+
                             DatabaseReference databaseReferenceUser = FirebaseDatabase.getInstance().getReference().child("details").child(key);
                             databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     progress.dismiss();
-                                    UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
-                                    Log.d("Value Name", userInformation.name);
-                                    userInformation.setKey(key);
-                                    friendname.add(userInformation);
-                                    Log.d("Adapter", friendname.toString());
+                                    final UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
+                                    DatabaseReference databaseReferenceDp = FirebaseDatabase.getInstance().getReference().child("avatar").child(key);
+                                    databaseReferenceDp.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot1) {
+                                            String dp=dataSnapshot1.getValue(String.class);
+                                            if(dp==null)
+                                                userInformation.setDp("userone");
+                                            else
+                                                userInformation.setDp(dp);
+                                            Log.d("Value Name", userInformation.name);
+                                            userInformation.setKey(key);
+                                            friendname.add(userInformation);
+                                            Log.d("Adapter", friendname.toString());
                                     /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FriendRequestActivity.this,android.R.layout.simple_expandable_list_item_1,friendname);
                                     lvFriendReq.setAdapter(arrayAdapter);*/
-                                    ListAdapter listAdapter = new MyFriendsAdapter(MyFriendsActivity.this,friendname);
-                                    lvMyFriends.setAdapter(listAdapter);
+                                            ListAdapter listAdapter = new MyFriendsAdapter(MyFriendsActivity.this,friendname);
+                                            lvMyFriends.setAdapter(listAdapter);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+
                                 }
 
                                 @Override

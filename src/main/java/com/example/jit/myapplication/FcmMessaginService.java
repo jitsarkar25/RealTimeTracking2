@@ -5,6 +5,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
@@ -53,6 +54,8 @@ public class FcmMessaginService extends FirebaseMessagingService{
         notificationBuilder.setContentTitle(title);
         notificationBuilder.setContentText(message);
         notificationBuilder.setSmallIcon(R.mipmap.ic_launcher);
+        notificationBuilder.setLargeIcon(BitmapFactory.decodeResource(getResources(),
+                R.mipmap.ic_launcher));
         notificationBuilder.setAutoCancel(true);
         notificationBuilder.setContentIntent(pendingIntent);
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

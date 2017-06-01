@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+
+    android:background="#424242"
+
     tools:context="com.example.jit.myapplication.MyTasksActivity">
 
     <Button
@@ -14,9 +13,12 @@
         android:layout_height="wrap_content"
         android:text="Add Tasks"
         android:id="@+id/bAddTasks"
+        android:background="@drawable/sqrbtnback"
+        android:textColor="#ffffff"
+        android:layout_margin="10dp"
+        android:layout_centerHorizontal="true"
         android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        />
 
     <ListView
         android:layout_width="match_parent"

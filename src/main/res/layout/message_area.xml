@@ -11,8 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textColorHint="#CFD8DC"
-        android:textColor="#CFD8DC"
+        android:textColor="#ffffff"
         android:hint="Write a message..."
+        android:padding="5dp"
         android:id="@+id/messageArea"
         android:maxHeight="80dp"
         />

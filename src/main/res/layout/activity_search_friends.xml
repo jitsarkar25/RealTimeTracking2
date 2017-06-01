@@ -1,35 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-
+    android:background="#d6d6d6"
     android:orientation="vertical"
-
     tools:context="com.example.jit.myapplication.SearchFriendsActivity">
-
-
     <EditText
-        android:layout_marginTop="20dp"
-        android:layout_width="match_parent"
+
+        android:layout_marginTop="80dp"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
+        android:background="@drawable/inputback"
+        android:layout_centerHorizontal="true"
         android:id="@+id/etSearchFriend"
         android:inputType="number"
         android:hint="Enter unique ID"
-        android:layout_gravity="center_horizontal" />
+        android:padding="15dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:layout_gravity="center_horizontal|center_vertical" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:text="Search"
+        android:layout_marginTop="10dp"
+        android:textColor="#ffffff"
+        android:textStyle="bold"
+        android:shadowColor="#a8a6a6"
+
+        android:layout_marginBottom="100dp"
+        android:layout_centerHorizontal="true"
+        android:layout_below="@+id/etSearchFriend"
+        android:background="@drawable/btnback"
         android:id="@+id/bSearchFriend"
         android:layout_gravity="center_horizontal" />
 <LinearLayout
     android:layout_width="match_parent"
     android:orientation="vertical"
     android:layout_margin="20dp"
+    android:layout_centerVertical="true"
+    android:layout_below="@+id/bSearchFriend"
     android:visibility="invisible"
+    android:background="@drawable/inputback"
     android:id="@+id/llFriendFound"
     android:layout_height="wrap_content">
     <TextView
@@ -38,18 +53,23 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Barnali Singh"
+        android:textColor="#ffffff"
         android:id="@+id/tvMessageFriend"
 
         android:layout_gravity="center_horizontal" />
 
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="270dp"
         android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:background="@drawable/btnback"
+        android:textColor="#ffffff"
         android:layout_height="wrap_content"
         android:text="Send Friend Request"
         android:id="@+id/bSendFriendReq"
+        android:padding="10dp"
         android:layout_marginBottom="20dp"
         android:layout_gravity="center_horizontal" />
 </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

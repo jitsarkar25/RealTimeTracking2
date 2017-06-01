@@ -2,6 +2,7 @@ package com.example.jit.myapplication;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -20,9 +21,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -58,7 +62,7 @@ public class SetLocationTaskActivity extends FragmentActivity implements OnMapRe
         });
         tasks =(Tasks) getIntent().getSerializableExtra("tasks");
         if(tasks!=null)
-            searchbox.setText(tasks.details);
+            searchbox.setText(tasks.address);
         submitloc.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,13 +100,13 @@ public class SetLocationTaskActivity extends FragmentActivity implements OnMapRe
             latret=String.valueOf(address.getLatitude());
             lonret=String.valueOf(address.getLongitude());
             LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
-            mMap.addMarker(new MarkerOptions().position(latLng).title(location).draggable(true));
+            mMap.addMarker(new MarkerOptions().position(latLng).title(location).draggable(true).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
             //add circle to the map
             mMap.addCircle(new CircleOptions()
                     .center(latLng)
-                    .radius(200).strokeColor(Color.BLUE)
+                    .radius(500).strokeColor(Color.YELLOW)
                     .strokeWidth(5f)
-                    .fillColor(0x550000FF));
+                    .fillColor(0x55fff200));
 
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng,15));
 
@@ -127,17 +131,29 @@ public class SetLocationTaskActivity extends FragmentActivity implements OnMapRe
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
 
+            if (!success) {
+                Log.e("mapstyle", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("mapstyle", "Can't find style. Error: ", e);
+        }
         // Add a marker in Sydney and move the camera
         if(tasks != null) {
             LatLng sydney = new LatLng(Double.parseDouble(tasks.latitude), Double.parseDouble(tasks.longitude));
-            mMap.addMarker(new MarkerOptions().position(sydney).title(tasks.details));
+            mMap.addMarker(new MarkerOptions().position(sydney).title(tasks.details).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
             mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
             mMap.addCircle(new CircleOptions()
                     .center(sydney)
-                    .radius(200).strokeColor(Color.BLUE)
+                    .radius(500).strokeColor(Color.YELLOW)
                     .strokeWidth(5f)
-                    .fillColor(0x550000FF));
+                    .fillColor(0x55fff200));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(sydney, 15));
         }
     }

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -24,6 +25,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolygonOptions;
@@ -36,9 +38,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_MAGENTA;
 import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_RED;
+import static com.google.android.gms.maps.model.BitmapDescriptorFactory.HUE_YELLOW;
 
 public class TrackMapActivity extends FragmentActivity implements OnMapReadyCallback,View.OnClickListener,LocationListener {
 
@@ -55,7 +60,9 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     private ArrayList<UserInformation> membersJoinedList;
     private ArrayList <String> membersJoinedKeyList;
     private boolean showme=false;
-
+    Timer markerTimer,markerTimer2;
+    Location locationuser;
+    private LatLng sydney;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,8 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
         stopTracking = (Button) findViewById(R.id.bStopTracking);
        // addMembers = (Button) findViewById(R.id.bAddMembers);
         stopTracking.setOnClickListener(this);
+        markerTimer = new Timer();
+        markerTimer2 = new Timer();
      //   addMembers.setOnClickListener(this);
         membersJoinedKeyList = new ArrayList<>();
         membersJoinedList = new ArrayList<>();
@@ -122,17 +131,9 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
-        Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        locationuser = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
-        if (location != null) {
 
-            Log.i("Location Info", "Location achieved!");
-
-        } else {
-
-            Log.i("Location Info", "No location :(");
-
-        }
 
     }
 
@@ -143,10 +144,16 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
 
     public void showMe(View v){
         showme=true;
+        if(locationuser!=null) {
+            LatLng position = new LatLng(locationuser.getLatitude(),locationuser.getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position, 17.5f));
+        }
     }
     public void showFriend(View v)
     {
         showme=false;
+        if(sydney!=null)
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.5f));
     }
     public void checkTrackSession(){
 
@@ -161,10 +168,10 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                 if(key.equals(senderId)) {
                     /*Log.d("added location",parts[1]+"   ,   "+parts[2]);
                     Toast.makeText(getApplicationContext(),parts[1]+" "+parts[2],Toast.LENGTH_SHORT).show();  */
-                    LatLng sydney = new LatLng(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
+                    sydney = new LatLng(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
                     if (d == 0) {
                         //mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
-                        marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                        marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Friend Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                     }
                     if(!showme)
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.5f));
@@ -172,9 +179,9 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                         marker2.remove();
                         mMap.addPolyline(new PolylineOptions()
                                 .add(new LatLng(c1, d1), sydney)
-                                .width(5).color(Color.BLUE).geodesic(true));
+                                .width(15).color(Color.YELLOW).geodesic(true));
                     }
-                    marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                    marker2 = mMap.addMarker(new MarkerOptions().position(sydney).title("Friend Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                     if(!showme)
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17.5f));
 
@@ -187,19 +194,20 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
                 if(!value.equals(dataSnapshot.getValue().toString())) {
+                    markerTimer.cancel();
                     value = dataSnapshot.getValue().toString();
                     String key=dataSnapshot.getKey();
                     Log.d("Key obtained",key);
                     String parts[] = value.split(",");
                     Log.d("changed location", value + "    " + "senderid=" + senderId);
                     if (key.equals(senderId)) {
-                        LatLng sydney = new LatLng(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
+                         sydney= new LatLng(Double.parseDouble(parts[0]), Double.parseDouble(parts[1]));
                         if(c==0) {
                             //mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
-                            marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                            marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Friend Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
                             mMap.addPolyline(new PolylineOptions()
                                     .add(new LatLng(c1,d1), sydney)
-                                    .width(5).color(Color.BLUE).geodesic(true));
+                                    .width(15).color(Color.YELLOW).geodesic(true));
                         }
                         if(!showme)
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,17.5f));
@@ -208,14 +216,31 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
                         if(c!=0)
                             mMap.addPolyline(new PolylineOptions()
                                     .add(new LatLng(a1,b1), sydney)
-                                    .width(5).color(Color.BLUE).geodesic(true));
+                                    .width(15).color(Color.YELLOW).geodesic(true));
 
-                        marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Your Location"));
+                        marker1=mMap.addMarker(new MarkerOptions().position(sydney).title("Friend Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+                        markerTimer = new Timer();
+                        markerTimer.scheduleAtFixedRate(new TimerTask() {
+                            @Override
+                            public void run() {
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if(marker1.isVisible())
+                                            marker1.setVisible(false);
+                                        else
+                                            marker1.setVisible(true);
+                                    }
+                                });
+
+                            }
+                        },0,500);
                         if(!showme)
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney,17.5f));
                         a1=Double.parseDouble(parts[0]);
                         b1=Double.parseDouble(parts[1]);
                         c=1;
+
                     }
                 }
             }
@@ -333,6 +358,20 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        try {
+            // Customise the styling of the base map using a JSON object defined
+            // in a raw resource file.
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(
+                            this, R.raw.style_json));
+
+            if (!success) {
+                Log.e("mapstyle", "Style parsing failed.");
+            }
+        } catch (Resources.NotFoundException e) {
+            Log.e("mapstyle", "Can't find style. Error: ", e);
+        }
+
         // Add a marker in Sydney and move the camera
        /* LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
@@ -363,19 +402,36 @@ public class TrackMapActivity extends FragmentActivity implements OnMapReadyCall
     public void onLocationChanged(Location location) {
 
         LatLng position =  new LatLng(location.getLatitude(),location.getLongitude());
-
+        locationuser=location;
+        markerTimer2.cancel();
         if(f==0) {
-            marker3=mMap.addMarker(new MarkerOptions().position(position).title("First Your Location").icon(BitmapDescriptorFactory.defaultMarker(HUE_MAGENTA)));
+            marker3=mMap.addMarker(new MarkerOptions().position(position).title("Your Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
         }
         if(showme)
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(position,17.5f));
         if(f!=0) {
             marker3.remove();
+            markerTimer2 = new Timer();
+            markerTimer2.scheduleAtFixedRate(new TimerTask() {
+                @Override
+                public void run() {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(marker3.isVisible())
+                                marker3.setVisible(false);
+                            else
+                                marker3.setVisible(true);
+                        }
+                    });
+
+                }
+            },0,500);
             mMap.addPolyline(new PolylineOptions()
                     .add(new LatLng(f1,f2), position)
-                    .width(5).color(Color.GREEN).geodesic(true));
+                    .width(15).color(Color.YELLOW).geodesic(true));
         }
-        marker3=mMap.addMarker(new MarkerOptions().position(position).title("First Your Location").icon(BitmapDescriptorFactory.defaultMarker(HUE_MAGENTA)));
+        marker3=mMap.addMarker(new MarkerOptions().position(position).title("Your Location").icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
         f1=location.getLatitude();
         f2=location.getLongitude();
         f=1;

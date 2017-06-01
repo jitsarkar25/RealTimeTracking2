@@ -120,11 +120,13 @@
     <orderEntry type="library" exported="" name="play-services-cast-framework-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-location-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-wearable-10.2.1" level="project" />
+    <orderEntry type="library" exported="" name="android-smart-animation-library-1.6" level="project" />
     <orderEntry type="library" exported="" name="play-services-maps-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="bolts-android-1.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-appinvite-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-crash-10.2.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="multidex-instrumentation-1.0.1" level="project" />
+    <orderEntry type="library" exported="" name="library-2.4.0" level="project" />
     <orderEntry type="library" exported="" name="play-services-plus-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="play-services-analytics-impl-10.2.1" level="project" />
     <orderEntry type="library" exported="" name="firebase-common-10.2.1" level="project" />

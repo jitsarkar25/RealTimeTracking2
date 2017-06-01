@@ -4,29 +4,55 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/back"
     tools:context="com.example.jit.myapplication.UserDetailsActivity">
-    <EditText
+    <ImageView
         android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:src="@drawable/trackit"
+        android:gravity="center_horizontal"
+        android:layout_marginBottom="80dp"
+        android:layout_marginTop="50dp"
+
+        />
+    <EditText
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:inputType="textPersonName"
         android:hint="Enter Full Name"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:ems="10"
+        android:drawableLeft="@drawable/user"
+        android:drawablePadding="10dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:background="@drawable/inputback"
+        android:padding="15dp"
         android:id="@+id/etNameRegister" />
 
     <EditText
-        android:layout_width="match_parent"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:inputType="number"
         android:layout_below="@+id/etNameRegister"
         android:hint="Enter Phone Number"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
+        android:background="@drawable/inputback"
+        android:layout_margin="10dp"
+        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/phone"
+        android:padding="15dp"
+        android:layout_centerHorizontal="true"
         android:ems="10"
         android:id="@+id/etPhoneRegister" />
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="270dp"
         android:layout_height="wrap_content"
         android:text="Submit"
+        android:background="@drawable/btnback"
+        android:textColor="#ffffff"
         android:layout_below="@+id/etPhoneRegister"
         android:layout_centerHorizontal="true"
         android:onClick="submitdetails"

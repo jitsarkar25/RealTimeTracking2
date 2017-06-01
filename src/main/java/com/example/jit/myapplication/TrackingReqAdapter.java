@@ -3,12 +3,14 @@ package com.example.jit.myapplication;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +24,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.podcopic.animationlib.library.AnimationType;
+import com.podcopic.animationlib.library.StartSmartAnimation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,17 +42,22 @@ public class TrackingReqAdapter extends ArrayAdapter<UserInformation> {
         con=context;
     }
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
 
 
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        View view = layoutInflater.inflate(R.layout.trackingrequestcontent, parent, false);
+        final View view = layoutInflater.inflate(R.layout.trackingrequestcontent, parent, false);
 
         final UserInformation userInformation = getItem(position);
         TextView name = (TextView) view.findViewById(R.id.tvTrackingReqName);
         name.setText(userInformation.name);
-
+        ImageView imageView=(ImageView)view.findViewById(R.id.ivTrackDp);
+        int id = con.getResources().getIdentifier("com.example.jit.myapplication:drawable/" + userInformation.getDp(), null, null);
+        Log.d("avatarId", id + "");
+        imageView.setImageResource(id);
         Button acceptTracking = (Button)view.findViewById(R.id.bAcceptTrackingReq);
+        Button rejecttTracking = (Button)view.findViewById(R.id.bRejectTrackingReq);
+
         acceptTracking.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -94,8 +103,66 @@ public class TrackingReqAdapter extends ArrayAdapter<UserInformation> {
                     }
                 });
 
-            }
+                StartSmartAnimation.startAnimation(view, AnimationType.SlideOutUp,1000,0,true);
+                final Handler handler = new Handler();
+                handler.postDelayed(new
 
+                                            Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    StartSmartAnimation.startAnimation(parent, AnimationType.SlideInUp, 1000, 0, true);
+                                                    remove(getItem(position));
+                                                    notifyDataSetChanged();
+                                                }
+                                            }
+
+                        , 1000);
+
+            }
+        });
+
+        rejecttTracking.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                SharedPreferences sharedPreferences = con.getSharedPreferences("userinfo", Context.MODE_PRIVATE);
+                final String userid = sharedPreferences.getString("serverid", "");
+                final String username = sharedPreferences.getString("username", "");
+                final DatabaseReference databaseReference1 = FirebaseDatabase.getInstance().getReference().child("users").child(userInformation.id);
+                databaseReference1.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        final String senderid = dataSnapshot.getValue(String.class);
+                        databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackReq").child(userid).child(senderid);
+                        databaseReference.removeValue();
+                        databaseReference = FirebaseDatabase.getInstance().getReference().child("TrackReq").child(senderid).child(userid);
+                        databaseReference.removeValue();
+                        Toast.makeText(con, "Tracking Request Rejected", Toast.LENGTH_SHORT).show();
+
+                        //sendind notification for accepted request
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                StartSmartAnimation.startAnimation(view, AnimationType.SlideOutRight,1000,0,true);
+                final Handler handler = new Handler();
+                handler.postDelayed(new
+
+                                            Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    StartSmartAnimation.startAnimation(parent, AnimationType.SlideInUp, 1000, 0, true);
+                                                    remove(getItem(position));
+                                                    notifyDataSetChanged();
+                                                }
+                                            }
+
+                        , 1000);
+            }
         });
         return view;
     }

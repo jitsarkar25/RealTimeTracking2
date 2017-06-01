@@ -12,7 +12,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/appicon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -20,17 +20,24 @@
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
 
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RegisterActivity" />
+        <activity
+            android:name=".RegisterActivity"
+            android:screenOrientation="portrait" />
         <activity
             android:name=".UserActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:label="Profile"
+            android:theme="@style/AppTheme2" />
 
         <service android:name=".MyFirebaseInstanceIDService">
             <intent-filter>
@@ -44,32 +51,64 @@
         </service>
         <service android:name=".TaskService" />
 
-        <activity android:name=".SearchFriendsActivity" />
-        <activity android:name=".FriendRequestActivity">
+        <activity
+            android:name=".SearchFriendsActivity"
+            android:label="Search Friends"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".FriendRequestActivity"
+            android:label="Friend Requests"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="OPEN_SEARCH_FRIEND" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".MyFriendsActivity">
+        <activity
+            android:name=".MyFriendsActivity"
+            android:label="My Friends"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="OPEN_MY_FRIENDS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".TrackingRequestActivity">
+        <activity
+            android:name=".TrackingRequestActivity"
+            android:label="Tracking Request"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2">
             <intent-filter>
                 <action android:name="OPEN_TRACKING_REQ" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".TrackingActivity" />
+        <activity
+            android:name=".TrackingActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".AddMemberToTrackActivity" />
-        <activity android:name=".AddTaskActivity" />
-        <activity android:name=".MyTasksActivity" />
+        <activity
+            android:name=".AddTaskActivity"
+            android:label="Add tasks"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2" />
+        <activity
+            android:name=".MyTasksActivity"
+            android:label="My Tasks"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -89,6 +128,7 @@
         <activity android:name=".TaskDetailsActivity" />
         <activity
             android:name=".TrackMapActivity"
+            android:screenOrientation="portrait"
             android:label="@string/title_activity_track_map">
             <intent-filter>
                 <action android:name="OPEN_ACTIVITY_TRACK" />
@@ -96,9 +136,34 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <activity android:name=".UserDetailsActivity" />
-        <activity android:name=".ChatLIst" />
-        <activity android:name=".ChatActivity"></activity>
+        <activity
+            android:name=".UserDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".ChatLIst"
+            android:label="Chat List"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2" />
+
+        <activity android:name=".ChatActivity"
+
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".ForgotPasswordActivity"
+            android:screenOrientation="portrait"
+            />
+        <activity android:name=".EmergencySettings"
+            android:label="Emergency Settings"
+            android:parentActivityName=".UserActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme2"
+            />
+        <activity android:name=".ChooseAvatar"
+            android:screenOrientation="portrait"
+
+            ></activity>
     </application>
 
 </manifest>

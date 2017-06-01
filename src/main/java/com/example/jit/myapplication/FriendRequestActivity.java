@@ -34,7 +34,7 @@ public class FriendRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_request);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lvFriendReq = (ListView) findViewById(R.id.lvFriendReq);
         mAuth = FirebaseAuth.getInstance();
 
@@ -86,14 +86,32 @@ public class FriendRequestActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     progress.dismiss();
-                                    UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
-                                    Log.d("Value Name", userInformation.name);
-                                    friendname.add(userInformation);
-                                    Log.d("Adapter", friendname.toString());
+                                   final UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
+                                    DatabaseReference databaseReferenceDp = FirebaseDatabase.getInstance().getReference().child("avatar").child(key);
+                                    databaseReferenceDp.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot1) {
+                                            String dp=dataSnapshot1.getValue(String.class);
+                                            if(dp==null)
+                                                userInformation.setDp("userone");
+                                            else
+                                                userInformation.setDp(dp);
+                                            Log.d("Value Name", userInformation.name);
+
+                                            friendname.add(userInformation);
+                                            Log.d("Adapter", friendname.toString());
                                     /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FriendRequestActivity.this,android.R.layout.simple_expandable_list_item_1,friendname);
                                     lvFriendReq.setAdapter(arrayAdapter);*/
-                                    ListAdapter listAdapter = new FriendRequestAdapter(FriendRequestActivity.this,friendname);
-                                    lvFriendReq.setAdapter(listAdapter);
+                                            ListAdapter listAdapter = new FriendRequestAdapter(FriendRequestActivity.this,friendname);
+                                            lvFriendReq.setAdapter(listAdapter);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
                                 }
 
                                 @Override

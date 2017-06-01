@@ -56,6 +56,7 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_friends);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         etSearch=(EditText)findViewById(R.id.etSearchFriend);
         bSearch=(Button)findViewById(R.id.bSearchFriend);
         tvMsgFriend=(TextView)findViewById(R.id.tvMessageFriend);
