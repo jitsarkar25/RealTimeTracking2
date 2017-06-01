@@ -9,6 +9,8 @@
         android:title="Friend Requests" />
     <item android:id="@+id/myfriends"
         android:title="My Friends" />
+    <item android:id="@+id/chatfriends"
+        android:title="Chat" />
     <item android:id="@+id/trackreqs"
         android:title="Tracking Requests" />
 </menu>

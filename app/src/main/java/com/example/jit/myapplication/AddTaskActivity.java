@@ -18,7 +18,7 @@ public class AddTaskActivity extends AppCompatActivity {
 
     EditText taskLocation,taskDetails;
     String gotlat,gotlon;
-    Button saveTask;
+    Button saveTask,deleteTask;
     private DatabaseReference databaseReference;
     private int random;
     Tasks tasks;
@@ -29,20 +29,22 @@ public class AddTaskActivity extends AppCompatActivity {
          tasks =(Tasks) getIntent().getSerializableExtra("tasks");
         taskLocation = (EditText) findViewById(R.id.etTaskLocation);
         taskDetails = (EditText) findViewById(R.id.etTaskDetails);
-        if(tasks == null)
-        {
+        saveTask = (Button) findViewById(R.id.bSaveTask);
+        deleteTask = (Button) findViewById(R.id.bDeleteTask);
+        if(tasks == null) {
             Log.d("TasksNull", "null");
             random = (int)(Math.random()*999999);
         }
         else
         {
+            deleteTask.setVisibility(View.VISIBLE);
             taskLocation.setText(tasks.address);
             taskDetails.setText(tasks.details);
             random = Integer.parseInt(tasks.id);
             gotlat=tasks.latitude;
             gotlon=tasks.longitude;
         }
-        saveTask = (Button) findViewById(R.id.bSaveTask);
+
         saveTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,14 +92,23 @@ public class AddTaskActivity extends AppCompatActivity {
         if(requestCode==5)
         {
             if (resultCode== RESULT_OK) {
-               // String address=data.getStringExtra("address");
-                // Toast.makeText(getApplicationContext(),data.getStringExtra("address"),Toast.LENGTH_SHORT).show();
                 taskLocation.setText(data.getStringExtra("address"));
                 gotlat= data.getStringExtra("lat");
                 gotlon= data.getStringExtra("lon");
-                //Log.d("Val", data.getStringExtra("lat") + "   " + data.getStringExtra("lon"));
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void deletetask(View v)
+    {
+        SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
+        String userid = sharedPreferences.getString("serverid", "");
+        databaseReference = FirebaseDatabase.getInstance().getReference().child("Tasks").child(userid).child(random+"");
+        databaseReference.removeValue();
+        Toast.makeText(getApplicationContext(),"Task Deleted",Toast.LENGTH_SHORT).show();
+        stopService(new Intent(getApplicationContext(), TaskService.class));
+        startService(new Intent(getApplicationContext(), TaskService.class));
+        finish();
     }
 }

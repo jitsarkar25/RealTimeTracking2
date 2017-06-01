@@ -12,10 +12,67 @@
     android:id="@+id/map"
     android:name="com.google.android.gms.maps.SupportMapFragment"
     android:layout_width="match_parent"
+
     android:layout_height="match_parent"
     android:layout_alignParentTop="true"
     android:layout_alignParentLeft="true"
     android:layout_alignParentStart="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_alignParentTop="true"
+        android:weightSum="99"
+        android:layout_height="wrap_content">
+    <Button
+        android:id="@+id/bShowMe"
+        android:background="@drawable/btnback"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Show Me"
+        android:textColor="#ffffff"
+        android:padding="5dp"
+        android:layout_weight="33"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="20dp"
+        android:textStyle="bold"
+        android:onClick="showMe"
+        />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="33"
+        android:layout_marginTop="20dp"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:src="@drawable/trackit"
+        />
+    <Button
+        android:id="@+id/bShowFriend"
+        android:layout_width="match_parent"
+        android:layout_weight="33"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="22dp"
+        android:background="@drawable/btnback"
+        android:textStyle="bold"
+        android:textColor="#ffffff"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:onClick="showFriend"
+        android:text="Show Friend"
+        />
+
+    </LinearLayout>
+    <Button
+        android:id="@+id/bStopTracking"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Stop Tracking"
+        android:background="@drawable/btnback"
+        android:textColor="#ffffff"
+       android:layout_alignParentBottom="true"
+        android:layout_margin="10dp"
+        android:textStyle="bold"
+        android:layout_weight="30"/>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_alignParentBottom="true"
@@ -23,30 +80,9 @@
     android:layout_above="@+id/map"
     android:orientation="horizontal"
     android:layout_height="wrap_content">
-    <Button
-        android:id="@+id/bShowMe"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Show Me"
-        android:layout_weight="30"
-        android:onClick="showMe"
-        />
 
-    <Button
-        android:id="@+id/bStopTracking"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Stop "
-        android:layout_weight="30"/>
-    <Button
-        android:id="@+id/bShowFriend"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="22dp"
-        android:layout_above="@+id/map"
-        android:onClick="showFriend"
-        android:text="Show Friend"
-        android:layout_weight="30"/>
+
+
+
 </LinearLayout>
 </RelativeLayout>

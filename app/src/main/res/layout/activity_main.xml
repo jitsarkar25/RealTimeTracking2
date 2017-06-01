@@ -6,64 +6,163 @@
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
+    android:background="@drawable/back"
     android:id="@+id/RelativeLayout"
+    android:fitsSystemWindows="true"
     android:orientation="vertical"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.jit.myapplication.MainActivity">
 
-    <com.google.android.gms.common.SignInButton
-        android:layout_width="match_parent"
-        android:id="@+id/sign_in_button"
-        android:layout_height="wrap_content"></com.google.android.gms.common.SignInButton>
 
-    <com.facebook.login.widget.LoginButton
-        android:id="@+id/login_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@+id/sign_in_button"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:gravity="center_vertical"
+        android:layout_centerHorizontal="true"
         android:layout_height="match_parent">
-        <EditText
+        <ImageView
             android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:src="@drawable/trackit"
+            android:gravity="center_horizontal"
+            android:layout_marginBottom="80dp"
+
+
+            />
+        <LinearLayout
+            android:layout_width="270dp"
+            android:weightSum="100"
+            android:orientation="horizontal"
+            android:layout_marginBottom="30dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content">
+            <Button
+                android:layout_width="match_parent"
+                android:layout_weight="50"
+                android:layout_margin="5dp"
+                android:text="Google"
+                android:textColor="#ffffff"
+                android:gravity="left|center_vertical"
+                android:textStyle="bold"
+                android:drawablePadding="10dp"
+                android:drawableLeft="@drawable/google"
+                android:paddingLeft="10dp"
+                android:id="@+id/sign_in_button"
+                android:layout_height="wrap_content"
+                android:background="@drawable/socialback"
+                />
+            <com.facebook.login.widget.LoginButton
+                android:id="@+id/login_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerHorizontal="true"
+                android:layout_below="@+id/sign_in_button"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_weight="50"
+                android:layout_margin="5dp"
+                android:text="Facebook"
+                android:id="@+id/fbButton"
+                android:textColor="#ffffff"
+                android:drawableLeft="@drawable/facebook"
+                android:paddingLeft="10dp"
+                android:gravity="left|center_vertical"
+                android:drawablePadding="2dp"
+                android:textStyle="bold"
+                android:layout_height="wrap_content"
+                android:background="@drawable/socialback"
+                />
+
+        </LinearLayout>
+
+
+
+        <EditText
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:hint="Email Address"
-
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:drawableLeft="@drawable/mai"
+            android:drawablePadding="10dp"
+            android:paddingLeft="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
             android:ems="10"
+            android:layout_margin="10dp"
+            android:background="@drawable/inputback"
             android:id="@+id/etEmailLogin" />
 
         <EditText
-            android:layout_width="match_parent"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:layout_below="@+id/etEmailLogin"
             android:hint="Password"
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp"
+            android:paddingLeft="10dp"
+            android:drawableLeft="@drawable/passwordicon"
+            android:textColor="#ffffff"
+            android:drawablePadding="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColorHint="#ffffff"
+            android:background="@drawable/inputback"
             android:ems="10"
             android:id="@+id/etPasswordLogin" />
 
         <Button
-            android:layout_width="wrap_content"
+            android:layout_width="270dp"
             android:layout_height="wrap_content"
             android:text="Sign In"
+            android:background="@drawable/btnback"
+            android:textColor="#ffffff"
+            android:layout_marginTop="10dp"
             android:id="@+id/bSignIn"
+            android:textStyle="bold"
+            android:layout_below="@+id/etPasswordLogin"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password"
+            android:textColor="#ffffff"
+            android:id="@+id/tvForgotPassword"
+            android:layout_margin="5dp"
+            android:gravity="right"
+            android:onClick="forgotpassword"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/etPasswordLogin"
+            android:layout_gravity="center_horizontal" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Anonymous Login"
+            android:textColor="#ffffff"
+            android:textStyle="bold"
+            android:id="@+id/tvAnonymous"
+            android:layout_margin="20dp"
             android:layout_centerHorizontal="true"
             android:layout_below="@+id/etPasswordLogin"
             android:layout_gravity="center_horizontal" />
     </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
         android:text="Register"
+        android:textStyle="bold"
         android:layout_alignParentBottom="true"
         android:id="@+id/tvRegister"
+        android:textColor="#ffffff"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal" />
+
 </RelativeLayout>

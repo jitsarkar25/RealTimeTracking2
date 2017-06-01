@@ -3,17 +3,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="#424242"
     tools:context=".AddTaskActivity">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:lines="7"
+        android:lines="5"
+        android:background="@drawable/inputback"
         android:hint="Enter The Task"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginBottom="10dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
         android:gravity="center_horizontal|center_vertical"
         android:id="@+id/etTaskDetails"
         android:layout_alignParentTop="true"
@@ -25,19 +29,42 @@
         android:layout_height="wrap_content"
         android:id="@+id/etTaskLocation"
         android:editable="false"
+        android:background="@drawable/inputback"
         android:lines="3"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:textColor="#ffffff"
+        android:textColorHint="#ffffff"
         android:hint="Double Tap To Enter Location"
         android:gravity="center_vertical|center_horizontal"
         android:layout_below="@+id/etTaskDetails"
         android:layout_centerHorizontal="true" />
 
     <Button
-        android:layout_width="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="Save"
+    android:id="@+id/bSaveTask"
+    android:background="@drawable/sqrbtnback"
+    android:layout_margin="10dp"
+
+    android:textColor="#ffffff"
+    android:layout_marginTop="30dp"
+    android:layout_below="@+id/etTaskLocation"
+    android:layout_centerHorizontal="true" />
+
+    <Button
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Save"
-        android:id="@+id/bSaveTask"
+        android:text="Delete "
+        android:id="@+id/bDeleteTask"
+        android:background="@drawable/sqrbtnback"
+        android:layout_margin="10dp"
+        android:visibility="gone"
+        android:onClick="deletetask"
+        android:textColor="#ffffff"
         android:layout_marginTop="30dp"
-        android:layout_below="@+id/etTaskLocation"
+        android:layout_below="@+id/bSaveTask"
         android:layout_centerHorizontal="true" />
 
 </RelativeLayout>

@@ -2,11 +2,14 @@ package com.example.jit.myapplication;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -30,6 +33,10 @@ public class UserDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
         etName =(EditText)findViewById(R.id.etNameRegister);
         etPhone =(EditText)findViewById(R.id.etPhoneRegister);
         mAuthListener = new FirebaseAuth.AuthStateListener() {
@@ -52,17 +59,26 @@ public class UserDetailsActivity extends AppCompatActivity {
     {
         String name = etName.getText().toString().trim();
         String phone = etPhone.getText().toString().trim();
-        int random = (int) (Math.random() * 99999999);
+        if(name.equals("") || phone.equals(""))
+        {
+            Toast.makeText(getApplicationContext(),"Enter the details",Toast.LENGTH_SHORT).show();
+        }
+        else if(phone.length()!=10){
+                etPhone.setError("Must be of 10 digits");
+    }
+        else {
+            int random = (int) (Math.random() * 99999999);
 
-        databaseReference = FirebaseDatabase.getInstance().getReference();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference.child("users").child(String.valueOf(random)).setValue(user.getUid());
-        UserInformation userInformation = new UserInformation(name, phone, String.valueOf(random));
-        //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        databaseReference.child("details").child(user.getUid()).setValue(userInformation);
-        sendsms(phone);
-        // startActivity(new Intent(getApplicationContext(), UserActivity.class));
-        finish();
+            databaseReference = FirebaseDatabase.getInstance().getReference();
+            user = FirebaseAuth.getInstance().getCurrentUser();
+            databaseReference.child("users").child(String.valueOf(random)).setValue(user.getUid());
+            UserInformation userInformation = new UserInformation(name, phone, String.valueOf(random));
+            //FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            databaseReference.child("details").child(user.getUid()).setValue(userInformation);
+            sendsms(phone);
+            // startActivity(new Intent(getApplicationContext(), UserActivity.class));
+
+        }
     }
     public void sendsms(String phone) {
 
@@ -76,6 +92,7 @@ public class UserDetailsActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(), "Please Verify OTP Sent to your mobile", Toast.LENGTH_SHORT).show();
+                finish();
                 startActivity(new Intent(getApplicationContext(), VerifyOtpActivity.class));
             }
         }, new Response.ErrorListener() {

@@ -34,6 +34,7 @@ public class TrackingRequestActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tracking_request);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         lvTrackingReqs = (ListView)findViewById(R.id.lvMyTrackingReqs);
         mAuth = FirebaseAuth.getInstance();
 
@@ -81,14 +82,31 @@ public class TrackingRequestActivity extends AppCompatActivity {
                             databaseReferenceUser.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
-                                    Log.d("Value Name", userInformation.name);
-                                    friendname.add(userInformation);
-                                    Log.d("Adapter", friendname.toString());
+                                   final UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
+                                    DatabaseReference databaseReferenceDp = FirebaseDatabase.getInstance().getReference().child("avatar").child(key);
+                                    databaseReferenceDp.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot1) {
+                                            String dp=dataSnapshot1.getValue(String.class);
+                                            if(dp==null)
+                                                userInformation.setDp("userone");
+                                            else
+                                                userInformation.setDp(dp);
+                                            Log.d("Value Name", userInformation.name);
+                                            friendname.add(userInformation);
+                                            Log.d("Adapter", friendname.toString());
                                     /*ArrayAdapter<String> arrayAdapter = new ArrayAdapter<String>(FriendRequestActivity.this,android.R.layout.simple_expandable_list_item_1,friendname);
                                     lvFriendReq.setAdapter(arrayAdapter);*/
-                                    ListAdapter listAdapter = new TrackingReqAdapter(TrackingRequestActivity.this,friendname);
-                                    lvTrackingReqs.setAdapter(listAdapter);
+                                            ListAdapter listAdapter = new TrackingReqAdapter(TrackingRequestActivity.this,friendname);
+                                            lvTrackingReqs.setAdapter(listAdapter);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
                                 }
 
                                 @Override

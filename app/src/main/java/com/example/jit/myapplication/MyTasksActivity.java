@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Adapter;
 import android.widget.Button;
 import android.widget.ListAdapter;
 import android.widget.ListView;
@@ -50,6 +51,10 @@ public class MyTasksActivity extends AppCompatActivity implements View.OnClickLi
     }
 
     public void fetchTasks(){
+
+        taskList.clear();
+        listAdapter = new TaskAdapter(MyTasksActivity.this,taskList);
+        lvTasks.setAdapter(listAdapter);
         progress = new ProgressDialog(MyTasksActivity.this);
         progress.setTitle("Please Wait");
         progress.setMessage("Fetching Tasks");

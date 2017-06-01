@@ -51,10 +51,12 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
     ProgressDialog progress;
     LinearLayout linearLayout;
     String token,dbId;
+    UserInformation userInformation;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_friends);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         etSearch=(EditText)findViewById(R.id.etSearchFriend);
         bSearch=(Button)findViewById(R.id.bSearchFriend);
         tvMsgFriend=(TextView)findViewById(R.id.tvMessageFriend);
@@ -116,10 +118,14 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             progress.dismiss();
-                                            UserInformation userInformation = dataSnapshot.getValue(UserInformation.class);
+                                            userInformation = dataSnapshot.getValue(UserInformation.class);
                                             Log.d("Value", userInformation.name);
                                             linearLayout.setVisibility(View.VISIBLE);
                                             tvMsgFriend.setText(userInformation.name);
+                                            if(userInformation.name.equals("Anonymous"))
+                                            {
+                                                bSendFriendReq.setText("Send Track Request");
+                                            }
 
                                             //fetching firebase token from database
 
@@ -165,6 +171,11 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
 
                 break;
             case R.id.bSendFriendReq:
+                if(userInformation.name.equals("Anonymous"))
+                {
+                    sendTrackRequest();
+                }
+                else
                 sendFriendRequest();
                 break;
         }
@@ -182,6 +193,47 @@ public class SearchFriendsActivity extends AppCompatActivity implements View.OnC
             mAuth.removeAuthStateListener(mAuthListener);
         }
     }
+    private void sendTrackRequest(){
+        DatabaseReference databaseReferenceFrndReq = FirebaseDatabase.getInstance().getReference();
+
+
+        databaseReferenceFrndReq.child("TrackReq").child(dbId).child(user.getUid()).setValue(false);
+        String url = "http://demobintest-com.stackstaging.com/send_notification.php";
+        StringRequest stringRequest=new StringRequest(Request.Method.POST,url, new Response.Listener<String>() {
+
+            @Override
+            public void onResponse(String response) {
+                //  progressDialog.dismiss();
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map <String,String> params =new HashMap<>();
+                SharedPreferences sharedPreferences = getSharedPreferences("userinfo", Context.MODE_PRIVATE);
+                String name = sharedPreferences.getString("username","");
+                params.put("key",token);
+                params.put("message",name + " wants to track you ");
+                params.put("title","Track Request");
+                params.put("open","OPEN_TRACKING_REQ");
+
+                return params;
+            }
+
+        };
+
+        MySingleton.getInstance(this).addToRequestQueue(stringRequest);
+    }
+
+
+
 
     private void sendFriendRequest(){
         DatabaseReference databaseReferenceFrndReq = FirebaseDatabase.getInstance().getReference();

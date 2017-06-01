@@ -1,15 +1,20 @@
 package com.example.jit.myapplication;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -59,12 +64,12 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth.AuthStateListener mAuthListener;
     private String TAG = "com.example.jit.myapplication";
     private GoogleApiClient mGoogleApiClient;
-    TextView tvRegister;
+    TextView tvRegister,anonymous;
     private static final int RC_SIGN_IN = 9001;
     EditText etEmail,etPassword;
     CallbackManager callbackManager;
-
-
+    ProgressDialog progressDialog;
+    ImageView imageView;
     Button signIn;
 
 
@@ -73,21 +78,39 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_main);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            Window w = getWindow(); // in Activity's onCreate() for instance
+            w.setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS, WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
+        }
+        progressDialog=new ProgressDialog(MainActivity.this);
         tvRegister=(TextView)findViewById(R.id.tvRegister);
         etEmail = (EditText)findViewById(R.id.etEmailLogin);
         etPassword = (EditText)findViewById(R.id.etPasswordLogin);
         signIn = (Button) findViewById(R.id.bSignIn);
+        anonymous = (TextView) findViewById(R.id.tvAnonymous);
+        anonymous.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                progressDialog.setTitle("Please Wait");
+                progressDialog.setMessage("Logging In");
+                progressDialog.show();
+                signInAnonymously();
+            }
+        });
         signout();
+
+
         signIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 signInUser();
             }
         });
         tvRegister.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                startActivity(new Intent(getApplicationContext(),RegisterActivity.class));
             }
         });
@@ -98,14 +121,19 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(),UserActivity.class));
             finish();
         }
+
         callbackManager=CallbackManager.Factory.create();
-        LoginButton loginButton=(LoginButton)findViewById(R.id.login_button);
+        final LoginButton loginButton=(LoginButton)findViewById(R.id.login_button);
+
         loginButton.setReadPermissions(Arrays.asList(
                 "public_profile", "email" ));
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
+                progressDialog.setTitle("Please Wait");
+                progressDialog.setMessage("Logging In");
+                progressDialog.show();
+                Log.d(TAG, "Success:" + loginResult);
                 SharedPreferences sharedPreferences = getSharedPreferences("logininfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putBoolean("islogin", true);
@@ -166,7 +194,14 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(signInIntent, RC_SIGN_IN);
             }
         });
+        Button fbButton=(Button)findViewById(R.id.fbButton);
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                loginButton.performClick();
 
+            }
+        });
     }
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
@@ -185,6 +220,7 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Log.d("haschild",dataSnapshot.hasChild(user.getUid())+"");
+                                    progressDialog.dismiss();
                                     if(dataSnapshot.hasChild(user.getUid()))
                                         startActivity(new Intent(getApplicationContext(), UserActivity.class));
                                     else
@@ -213,11 +249,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
+        Log.d("jitGoogle","activity result "+requestCode);
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            Log.d("jitGoogle","activity result");
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             if (result.isSuccess()) {
+                Log.d("jitGoogle","success");
+                progressDialog.setTitle("Please Wait");
+                progressDialog.setMessage("Logging In");
+                progressDialog.show();
                 // Google Sign In was successful, authenticate with Firebase
                 SharedPreferences sharedPreferences = getSharedPreferences("logininfo", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -226,6 +267,7 @@ public class MainActivity extends AppCompatActivity {
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
             } else {
+                Log.d("jitGoogle","fail");
                 // Google Sign In failed, update UI appropriately
 
                 // ...
@@ -263,10 +305,13 @@ public class MainActivity extends AppCompatActivity {
                             Log.d("ffgghhjj", "signInWithCredential:success");
                             final FirebaseUser user = mAuth.getCurrentUser();
                             DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("details");
+
                             databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     Log.d("haschild",dataSnapshot.hasChild(user.getUid())+"");
+                                    progressDialog.dismiss();
+
                                     if(dataSnapshot.hasChild(user.getUid()))
                                             startActivity(new Intent(getApplicationContext(), UserActivity.class));
                                     else
@@ -310,33 +355,41 @@ public class MainActivity extends AppCompatActivity {
 
         String email =etEmail.getText().toString();
         String password =etPassword.getText().toString();
+        if(email.equals("") || password.equals(""))
+        {
+            Toast.makeText(getApplicationContext(),"Please enter the details",Toast.LENGTH_SHORT).show();
+        }
+else {
+            progressDialog.setTitle("Please Wait");
+            progressDialog.setMessage("Logging In");
+            progressDialog.show();
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            progressDialog.dismiss();
+                            Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
+                            progressDialog.dismiss();
+                            // If sign in fails, display a message to the user. If sign in succeeds
+                            // the auth state listener will be notified and logic to handle the
+                            // signed in user can be handled in the listener.
+                            if (!task.isSuccessful()) {
+                                Log.w(TAG, "signInWithEmail:failed", task.getException());
+                                Toast.makeText(MainActivity.this, "Invalid Credentials",
+                                        Toast.LENGTH_SHORT).show();
+                            } else {
+                                SharedPreferences sharedPreferences = getSharedPreferences("logininfo", Context.MODE_PRIVATE);
+                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                editor.putBoolean("islogin", true);
+                                editor.commit();
+                                startActivity(new Intent(getApplicationContext(), UserActivity.class));
+                                finish();
+                            }
 
-        mAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
-                        SharedPreferences sharedPreferences = getSharedPreferences("logininfo", Context.MODE_PRIVATE);
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putBoolean("islogin",true);
-                        editor.commit();
-                        startActivity(new Intent(getApplicationContext(),UserActivity.class));
-                        finish();
-                        // If sign in fails, display a message to the user. If sign in succeeds
-                        // the auth state listener will be notified and logic to handle the
-                        // signed in user can be handled in the listener.
-                        if (!task.isSuccessful()) {
-                            Log.w(TAG, "signInWithEmail:failed", task.getException());
-                            Toast.makeText(MainActivity.this, "Invalid Credentials",
-                                    Toast.LENGTH_SHORT).show();
-                        }else
-                        {
-
+                            // ...
                         }
-
-                        // ...
-                    }
-                });
+                    });
+        }
     }
     public void saveToken(FirebaseUser user){
         Log.d("State","here");
@@ -354,4 +407,53 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         signout();
-}}
+}
+    private void signInAnonymously() {
+        // [START signin_anonymously]
+        mAuth.signInAnonymously()
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInAnonymously:success");
+                            final FirebaseUser user = mAuth.getCurrentUser();
+                            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference().child("details").child(user.getUid());
+                            int random = (int) (Math.random() * 99999999);
+                            UserInformation userInformation=new UserInformation("Anonymous","",random+"");
+                            databaseReference.setValue(userInformation);
+                            databaseReference= FirebaseDatabase.getInstance().getReference().child("users").child(String.valueOf(random));
+                            databaseReference.setValue(user.getUid());
+                            SharedPreferences sharedPreferences = getSharedPreferences("logininfo", Context.MODE_PRIVATE);
+                                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                                    editor.putBoolean("islogin", true);
+                                    editor.putBoolean("isanonymous", true);
+                                    editor.commit();
+                                    progressDialog.dismiss();
+
+                            startActivity(new Intent(getApplicationContext(),UserActivity.class));
+                            finish();
+
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInAnonymously:failure", task.getException());
+                            Toast.makeText(MainActivity.this, "Authentication failed.",
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+
+                        // [START_EXCLUDE]
+
+                        // [END_EXCLUDE]
+                    }
+                });
+        // [END signin_anonymously]
+    }
+
+    public void forgotpassword(View v)
+    {
+        startActivity(new Intent(getApplicationContext(),ForgotPasswordActivity.class));
+    }
+
+}

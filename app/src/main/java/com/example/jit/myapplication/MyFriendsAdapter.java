@@ -2,12 +2,14 @@ package com.example.jit.myapplication;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +23,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.podcopic.animationlib.library.AnimationType;
+import com.podcopic.animationlib.library.StartSmartAnimation;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,16 +42,19 @@ public class MyFriendsAdapter extends ArrayAdapter<UserInformation> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
 
 
         LayoutInflater layoutInflater=LayoutInflater.from(getContext());
-        View view=layoutInflater.inflate(R.layout.myfriendscontent, parent, false);
+        final View view=layoutInflater.inflate(R.layout.myfriendscontent, parent, false);
 
         final UserInformation userInformation=getItem(position);
         TextView name=(TextView)view.findViewById(R.id.tvMyFriendName);
         name.setText(userInformation.name);
-
+        ImageView imageView=(ImageView)view.findViewById(R.id.ivmyFriendsDp);
+        int id = con.getResources().getIdentifier("com.example.jit.myapplication:drawable/" + userInformation.getDp(), null, null);
+        Log.d("avatarId", id + "");
+        imageView.setImageResource(id);
         Button bSendTrackingRequest = (Button) view.findViewById(R.id.bSendTrackReq);
         bSendTrackingRequest.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +100,21 @@ public class MyFriendsAdapter extends ArrayAdapter<UserInformation> {
                 databaseReference = FirebaseDatabase.getInstance().getReference().child("FriendReq").child(receiverid).child(senderid);
                 databaseReference.removeValue();
                 Toast.makeText(con,"Friend Removed",Toast.LENGTH_SHORT).show();
+
+                StartSmartAnimation.startAnimation(view, AnimationType.SlideOutRight,1000,0,true);
+                final Handler handler = new Handler();
+                handler.postDelayed(new
+
+                                            Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    StartSmartAnimation.startAnimation(parent, AnimationType.SlideInUp, 1000, 0, true);
+                                                    remove(getItem(position));
+                                                    notifyDataSetChanged();
+                                                }
+                                            }
+
+                        , 1000);
             }
         });
         return view;

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#424242"
+    android:orientation="vertical"
+    tools:context="com.example.jit.myapplication.EmergencySettings"
+    >
+
+
+
+        <EditText
+            android:layout_marginTop="30dp"
+            android:id="@+id/etcontact1"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/inputback"
+            android:padding="15dp"
+            android:hint="Contact 1"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:inputType="phone" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+           android:layout_gravity="center_horizontal"
+            android:background="@drawable/sqrbtnback"
+            android:onClick="save1"
+            android:layout_marginBottom="15dp"
+            android:text="Save" />
+
+
+        <EditText
+            android:id="@+id/etcontact2"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:hint="Contact 2"
+            android:background="@drawable/inputback"
+            android:padding="15dp"
+            android:layout_gravity="center_horizontal"
+            android:ems="10"
+            android:inputType="phone" />
+        <Button
+
+            android:onClick="save2"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="5dp"
+            android:textColor="#ffffff"
+            android:layout_marginBottom="15dp"
+            android:background="@drawable/sqrbtnback"
+            android:text="Save" />
+
+
+        <EditText
+            android:id="@+id/etcontact3"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:textColor="#ffffff"
+            android:textColorHint="#ffffff"
+            android:ems="10"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/inputback"
+            android:padding="10dp"
+            android:hint="Contact 3"
+            android:inputType="phone" />
+
+        <Button
+
+            android:onClick="save3"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textColor="#ffffff"
+            android:layout_margin="5dp"
+            android:background="@drawable/sqrbtnback"
+            android:text="Save" />
+
+</LinearLayout>

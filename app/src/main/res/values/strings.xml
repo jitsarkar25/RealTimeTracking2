@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">TrackIt</string>
     <string name="title_activity_find_friends">FindFriendsActivity</string>
     <string name="title_activity_set_location_task">Map</string>
     <string name="title_activity_track_map">Map</string>
